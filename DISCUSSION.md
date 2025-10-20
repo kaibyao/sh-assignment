@@ -24,8 +24,16 @@ added 424 packages, and audited 425 packages in 16s
 
 ### Problems noticed when running `npm run dev` the first time.
 
-UI:
-* Basic list view, UI can be significantly improved.
+#### UI is basic, can be improved
+
+Not a whole lot to say. Unstyled / hard to read. Some work can be done here to improve the basic layout to make this easier to read & browse for users.
+
+Some things:
+* "Solace Advocates" page title could be improved (Typography, logo, header styling?)
+* Search area is all text-based (this is its own later section).
+* Table layout / spacing / separation of contextual information
+
+#### Nextjs hydration issue (fixed)
 
 Next.js:
 ```
@@ -37,6 +45,8 @@ This will cause a hydration error.
 ```
 
 ^ This seems like an easy fix.
+
+#### JS error when searching (fixed)
 
 Another error when searching:
 
@@ -55,3 +65,32 @@ src/app/page.tsx (32:36) @ includes
   34 |     });
   35 |
 ```
+
+#### `Advocate` data model is untyped. (fixed)
+
+We have a number of typescript issues stemming from using the API endpoint to fetch & display various advocate attributes without them being typed, which leads to issues like the previous one.
+
+#### Search area improvements
+
+* It's just html (which isn't a problem on its own, except...)
+* We are making stateful updates on the html element itself (prime candidate for React componentization).
+* Some redundant information could be iconized.
+* UX: "Reset" doesn't have to appear when the text box is empty.
+* Could use filters for specialties, years of experience, degree, and city.
+* The searching logic itself is basic and uses `.includes()` on every field, which can lead to perf issues when searching across many advocates. Would probably want to convert this to using a fuzzy-searching library (or if this were being productionized, to a search engine a la Algolia, ElasticSearch, TypeSense, etc.).
+
+#### Currently fetching all advocates
+
+We currently fetch all advocate rows from the database. Given that we should assume that there are potentially hundreds of thousands of advocates, it would make sense to limit this via pagination.
+
+#### Currently READ-only
+
+There's no way to add or edit (or remove/archive) an advocate, and I suspect this is necessary for this kind of application.
+
+#### Specialties are just an array of strings
+
+There's a lot of duplicate specialties, and the specialties for each advocate is just a json payload of a string array. If we ever want to do any kind of filtering / grouping / analysis on specialties, they will need to be their own data model / db table.
+
+#### We only have cities and not states
+
+Feels like a larger feature improvement for this kind of assignment (this would be a future task if a real project), but we might want to filter/search on US-state and not just city, which would mean having a location model that links a city to a US-state.

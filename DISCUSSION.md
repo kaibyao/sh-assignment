@@ -103,6 +103,9 @@ Using a default RadixUI theme for now to get basic layout and styling. If this w
 
 I'd probably want to eventually convert the table to a data-grid framework (like [agGrid](https://www.ag-grid.com/), or [Glide](https://grid.glideapps.com/)) to more easily support filtering & sorting.
 
+#### Implement better logging
+
+If we productionize this, console.log isn't going to cut it. Should probably use Pino or similar.
 
 ## AI Usage
 

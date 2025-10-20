@@ -94,3 +94,7 @@ There's a lot of duplicate specialties, and the specialties for each advocate is
 #### We only have cities and not states
 
 Feels like a larger feature improvement for this kind of assignment (this would be a future task if a real project), but we might want to filter/search on US-state and not just city, which would mean having a location model that links a city to a US-state.
+
+#### More thoughtful styling
+
+Using a default RadixUI theme for now to get basic layout and styling. If this were a full-fledged app, I'd probably want to start from the unstyled primitives instead and build off of that w/ specs given by the Design team.

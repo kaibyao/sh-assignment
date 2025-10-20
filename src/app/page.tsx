@@ -2,6 +2,8 @@
 
 import { useEffect, useState } from "react";
 import { SelectAdvocate } from "@/db/schema";
+import "@radix-ui/themes/styles.css";
+import "./globals.css";
 
 export default function Home() {
   const [advocates, setAdvocates] = useState<SelectAdvocate[]>([]);

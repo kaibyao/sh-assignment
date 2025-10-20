@@ -1,46 +1,24 @@
 import db from "../../../db";
 import { advocates, advocateSpecialties, specialties } from "../../../db/schema";
-import { eq } from "drizzle-orm";
-
-type AdvocateSpecialtyRow = {
-  advocateId: number;
-  specialtyId: number;
-  specialtyName: string;
-};
+import { eq, sql } from "drizzle-orm";
 
 export async function GET() {
-  // Fetch all advocates
-  const advocatesData = await db.select().from(advocates);
-
-  // Fetch all advocate-specialty relationships with specialty names
-  const advocateSpecialtyData = await db
+  const data = await db
     .select({
-      advocateId: advocateSpecialties.advocateId,
-      specialtyId: advocateSpecialties.specialtyId,
-      specialtyName: specialties.name,
+      id: advocates.id,
+      firstName: advocates.firstName,
+      lastName: advocates.lastName,
+      city: advocates.city,
+      degree: advocates.degree,
+      yearsOfExperience: advocates.yearsOfExperience,
+      phoneNumber: advocates.phoneNumber,
+      createdAt: advocates.createdAt,
+      specialties: sql<string[]>`COALESCE(array_agg(${specialties.name}), ARRAY[]::text[])`,
     })
-    .from(advocateSpecialties)
-    .innerJoin(specialties, eq(advocateSpecialties.specialtyId, specialties.id));
-
-  // Group specialties by advocate
-  const specialtiesByAdvocate = (
-    advocateSpecialtyData as AdvocateSpecialtyRow[]
-  ).reduce<Record<number, string[]>>(
-    (acc: Record<number, string[]>, row: AdvocateSpecialtyRow) => {
-      if (!acc[row.advocateId]) {
-        acc[row.advocateId] = [];
-      }
-      acc[row.advocateId].push(row.specialtyName);
-      return acc;
-    },
-    {}
-  );
-
-  // Combine advocates with their specialties
-  const data = advocatesData.map((advocate) => ({
-    ...advocate,
-    specialties: specialtiesByAdvocate[advocate.id] || [],
-  }));
+    .from(advocates)
+    .innerJoin(advocateSpecialties, eq(advocateSpecialties.advocateId, advocates.id))
+    .innerJoin(specialties, eq(advocateSpecialties.specialtyId, specialties.id))
+    .groupBy(advocates.id);
 
   return Response.json({ data });
 }

@@ -8,50 +8,36 @@ import { AdvocatesPageHeader } from "@/app/_components/AdvocatesPageHeader";
 import { AdvocatesTable } from "@/app/_components/AdvocatesTable";
 import { AdvocatesTableHeader } from "@/app/_components/AdvocatesTableHeader";
 import { Flex } from "@radix-ui/themes";
+import { PAGE_SIZE } from "@/app/constants";
 
 export default function Home() {
   const [advocates, setAdvocates] = useState<AdvocateWithSpecialties[]>([]);
-  const [filteredAdvocates, setFilteredAdvocates] = useState<
-    AdvocateWithSpecialties[]
-  >([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(0);
+  const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
-    console.log("fetching advocates...");
-    fetch("/api/advocates").then((response) => {
+    console.log("fetching advocates...", { page: currentPage, searchTerm });
+    const params = new URLSearchParams({
+      page: currentPage.toString(),
+      ...(searchTerm && { searchTerm }),
+    });
+
+    fetch(`/api/advocates?${params}`).then((response) => {
       response.json().then((jsonResponse) => {
         setAdvocates(jsonResponse.data);
-        setFilteredAdvocates(jsonResponse.data);
+        setTotalPages(Math.ceil(jsonResponse.totalCount / PAGE_SIZE));
       });
     });
-  }, []);
+  }, [currentPage, searchTerm]);
 
-  const onChange = (searchTerm: string) => {
-    if (searchTerm === "") {
-      setFilteredAdvocates(advocates);
-      return;
-    }
+  const onChange = (newSearchTerm: string) => {
+    setSearchTerm(newSearchTerm);
+    setCurrentPage(1); // Reset to page 1 when search changes
+  };
 
-    const caseInsensitiveSearchTerm = searchTerm.toLowerCase();
-
-    console.log("filtering advocates...", caseInsensitiveSearchTerm);
-
-    const filteredAdvocates = advocates.filter((advocate) => {
-      return (
-        advocate.firstName.toLowerCase().includes(caseInsensitiveSearchTerm) ||
-        advocate.lastName.toLowerCase().includes(caseInsensitiveSearchTerm) ||
-        advocate.city.toLowerCase().includes(caseInsensitiveSearchTerm) ||
-        advocate.degree.toLowerCase().includes(caseInsensitiveSearchTerm) ||
-        advocate.specialties.some((specialty) =>
-          specialty.toLowerCase().includes(caseInsensitiveSearchTerm),
-        ) ||
-        advocate.yearsOfExperience
-          .toLocaleString()
-          .toLowerCase()
-          .includes(caseInsensitiveSearchTerm)
-      );
-    });
-
-    setFilteredAdvocates(filteredAdvocates);
+  const onPageChange = (page: number) => {
+    setCurrentPage(page);
   };
 
   return (
@@ -59,8 +45,13 @@ export default function Home() {
       <AdvocatesPageHeader />
       <main style={{ marginLeft: "24px", marginRight: "24px" }}>
         <Flex direction="column" gap="4" mt="2">
-          <AdvocatesTableHeader onSearchChange={onChange} />
-          <AdvocatesTable filteredAdvocates={filteredAdvocates} />
+          <AdvocatesTableHeader
+            onSearchChange={onChange}
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={onPageChange}
+          />
+          <AdvocatesTable filteredAdvocates={advocates} />
         </Flex>
       </main>
     </Flex>

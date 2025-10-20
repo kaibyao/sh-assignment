@@ -1,35 +1,15 @@
-import { FC, useState } from "react";
+import { AdvocatesTableHeaderSearch } from "@/app/_components/AdvocatesTableHeaderSearch";
+import { Flex } from "@radix-ui/themes";
+import { FC } from "react";
 
 interface Props {
   onSearchChange(searchTerm: string): void;
-  onSearchReset(): void;
 }
 
-export const AdvocatesTableHeader: FC<Props> = ({
-  onSearchChange,
-  onSearchReset,
-}) => {
-  const [searchTerm, setSearchTerm] = useState("");
-
-  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const searchTerm = e.target.value;
-
-    setSearchTerm(searchTerm);
-    onSearchChange(searchTerm);
-  };
-
+export const AdvocatesTableHeader: FC<Props> = ({ onSearchChange }) => {
   return (
-    <div>
-      <p>Search</p>
-      <p>
-        Searching for: <span id="search-term"></span>
-      </p>
-      <input
-        style={{ border: "1px solid black" }}
-        onChange={handleSearchChange}
-        value={searchTerm}
-      />
-      <button onClick={onSearchReset}>Reset Search</button>
-    </div>
+    <Flex gap="5" justify="between" align="center">
+      <AdvocatesTableHeaderSearch onSearchChange={onSearchChange} />
+    </Flex>
   );
 };

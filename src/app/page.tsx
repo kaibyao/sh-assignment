@@ -7,6 +7,7 @@ import "./globals.css";
 import { AdvocatesPageHeader } from "@/app/_components/AdvocatesPageHeader";
 import { AdvocatesTable } from "@/app/_components/AdvocatesTable";
 import { AdvocatesTableHeader } from "@/app/_components/AdvocatesTableHeader";
+import { Flex } from "@radix-ui/themes";
 
 export default function Home() {
   const [advocates, setAdvocates] = useState<AdvocateWithSpecialties[]>([]);
@@ -25,6 +26,11 @@ export default function Home() {
   }, []);
 
   const onChange = (searchTerm: string) => {
+    if (searchTerm === "") {
+      setFilteredAdvocates(advocates);
+      return;
+    }
+
     const caseInsensitiveSearchTerm = searchTerm.toLowerCase();
 
     console.log("filtering advocates...", caseInsensitiveSearchTerm);
@@ -48,25 +54,15 @@ export default function Home() {
     setFilteredAdvocates(filteredAdvocates);
   };
 
-  const onClick = () => {
-    console.log(advocates);
-    setFilteredAdvocates(advocates);
-  };
-
   return (
-    <>
+    <Flex direction="column" gap="2">
       <AdvocatesPageHeader />
-      <main style={{ margin: "24px" }}>
-        <br />
-        <br />
-        <AdvocatesTableHeader
-          onSearchChange={onChange}
-          onSearchReset={onClick}
-        />
-        <br />
-        <br />
-        <AdvocatesTable filteredAdvocates={filteredAdvocates} />
+      <main style={{ marginLeft: "24px", marginRight: "24px" }}>
+        <Flex direction="column" gap="4" mt="2">
+          <AdvocatesTableHeader onSearchChange={onChange} />
+          <AdvocatesTable filteredAdvocates={filteredAdvocates} />
+        </Flex>
       </main>
-    </>
+    </Flex>
   );
 }

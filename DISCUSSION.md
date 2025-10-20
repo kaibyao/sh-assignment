@@ -98,3 +98,7 @@ Feels like a larger feature improvement for this kind of assignment (this would 
 #### More thoughtful styling
 
 Using a default RadixUI theme for now to get basic layout and styling. If this were a full-fledged app, I'd probably want to start from the unstyled primitives instead and build off of that w/ specs given by the Design team.
+
+#### Sorting & filtering on Advocates Table
+
+I'd probably want to eventually convert the table to a data-grid framework (like [agGrid](https://www.ag-grid.com/), or [Glide](https://grid.glideapps.com/)) to more easily support filtering & sorting.

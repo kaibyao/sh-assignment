@@ -24,7 +24,7 @@ added 424 packages, and audited 425 packages in 16s
 
 ### Problems noticed when running `npm run dev` the first time.
 
-#### UI is basic, can be improved
+#### UI is basic, can be improved (done)
 
 Not a whole lot to say. Unstyled / hard to read. Some work can be done here to improve the basic layout to make this easier to read & browse for users.
 
@@ -70,6 +70,14 @@ src/app/page.tsx (32:36) @ includes
 
 We have a number of typescript issues stemming from using the API endpoint to fetch & display various advocate attributes without them being typed, which leads to issues like the previous one.
 
+#### Specialties are just an array of strings (resolved)
+
+There's a lot of duplicate specialties, and the specialties for each advocate is just a json payload of a string array... that's JSON-stringified (IE, it's not actually an array, but a JSON string representing an array of strings). If we ever want to do any kind of filtering / grouping / analysis on specialties, they will need to be their own data model / db table.
+
+#### Currently fetching all advocates
+
+We currently fetch all advocate rows from the database. Given that we should assume that there are potentially hundreds of thousands of advocates, it would make sense to limit this via pagination.
+
 #### Search area improvements
 
 * It's just html (which isn't a problem on its own, except...)
@@ -79,17 +87,9 @@ We have a number of typescript issues stemming from using the API endpoint to fe
 * Could use filters for specialties, years of experience, degree, and city.
 * The searching logic itself is basic and uses `.includes()` on every field, which can lead to perf issues when searching across many advocates. Would probably want to convert this to using a fuzzy-searching library (or if this were being productionized, to a search engine a la Algolia, ElasticSearch, TypeSense, etc.).
 
-#### Currently fetching all advocates
-
-We currently fetch all advocate rows from the database. Given that we should assume that there are potentially hundreds of thousands of advocates, it would make sense to limit this via pagination.
-
 #### Currently READ-only
 
 There's no way to add or edit (or remove/archive) an advocate, and I suspect this is necessary for this kind of application.
-
-#### Specialties are just an array of strings
-
-There's a lot of duplicate specialties, and the specialties for each advocate is just a json payload of a string array. If we ever want to do any kind of filtering / grouping / analysis on specialties, they will need to be their own data model / db table.
 
 #### We only have cities and not states
 
@@ -102,3 +102,11 @@ Using a default RadixUI theme for now to get basic layout and styling. If this w
 #### Sorting & filtering on Advocates Table
 
 I'd probably want to eventually convert the table to a data-grid framework (like [agGrid](https://www.ag-grid.com/), or [Glide](https://grid.glideapps.com/)) to more easily support filtering & sorting.
+
+
+## AI Usage
+
+* Environment setup w/ DB config.
+* DB Schema model typing.
+* Conversion of table to Radix table.
+* Conversion of `specialties` data model.

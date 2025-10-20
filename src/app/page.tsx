@@ -1,17 +1,17 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { SelectAdvocate } from "@/db/schema";
+import { AdvocateWithSpecialties } from "@/db/schema";
 import "@radix-ui/themes/styles.css";
 import "./globals.css";
 import { AdvocatesPageHeader } from "@/app/_components/AdvocatesPageHeader";
 import { AdvocatesTable } from "@/app/_components/AdvocatesTable";
 
 export default function Home() {
-  const [advocates, setAdvocates] = useState<SelectAdvocate[]>([]);
-  const [filteredAdvocates, setFilteredAdvocates] = useState<SelectAdvocate[]>(
-    [],
-  );
+  const [advocates, setAdvocates] = useState<AdvocateWithSpecialties[]>([]);
+  const [filteredAdvocates, setFilteredAdvocates] = useState<
+    AdvocateWithSpecialties[]
+  >([]);
 
   useEffect(() => {
     console.log("fetching advocates...");
@@ -35,7 +35,9 @@ export default function Home() {
         advocate.lastName.includes(searchTerm) ||
         advocate.city.includes(searchTerm) ||
         advocate.degree.includes(searchTerm) ||
-        advocate.specialties.includes(searchTerm) ||
+        advocate.specialties.some((specialty) =>
+          specialty.includes(searchTerm)
+        ) ||
         advocate.yearsOfExperience.toLocaleString().includes(searchTerm)
       );
     });

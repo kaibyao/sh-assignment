@@ -1,4 +1,4 @@
-import { drizzle } from "drizzle-orm/postgres-js";
+import { drizzle, PostgresJsDatabase } from "drizzle-orm/postgres-js";
 import postgres from "postgres";
 
 const setup = () => {
@@ -8,7 +8,7 @@ const setup = () => {
       select: () => ({
         from: () => [],
       }),
-    };
+    } as unknown as PostgresJsDatabase<Record<string, never>>;
   }
 
   // for query purposes

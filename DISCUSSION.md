@@ -74,11 +74,7 @@ We have a number of typescript issues stemming from using the API endpoint to fe
 
 There's a lot of duplicate specialties, and the specialties for each advocate is just a json payload of a string array... that's JSON-stringified (IE, it's not actually an array, but a JSON string representing an array of strings). If we ever want to do any kind of filtering / grouping / analysis on specialties, they will need to be their own data model / db table.
 
-#### Currently fetching all advocates
-
-We currently fetch all advocate rows from the database. Given that we should assume that there are potentially hundreds of thousands of advocates, it would make sense to limit this via pagination.
-
-#### Search area improvements
+#### Search area improvements (resolved)
 
 * It's just html (which isn't a problem on its own, except...)
 * We are making stateful updates on the html element itself (prime candidate for React componentization).
@@ -86,6 +82,10 @@ We currently fetch all advocate rows from the database. Given that we should ass
 * UX: "Reset" doesn't have to appear when the text box is empty.
 * Could use filters for specialties, years of experience, degree, and city.
 * The searching logic itself is basic and uses `.includes()` on every field, which can lead to perf issues when searching across many advocates. Would probably want to convert this to using a fuzzy-searching library (or if this were being productionized, to a search engine a la Algolia, ElasticSearch, TypeSense, etc.).
+
+#### Currently fetching all advocates
+
+We currently fetch all advocate rows from the database. Given that we should assume that there are potentially hundreds of thousands of advocates, it would make sense to limit this via pagination.
 
 #### Currently READ-only
 

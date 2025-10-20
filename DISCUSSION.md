@@ -22,10 +22,6 @@ added 424 packages, and audited 425 packages in 16s
 
 * Might warrant fixing some of these if they turn out to be significantly problematic.
 
-### Setup issues
-
-* .gitignore refers to `.env*.local`, but nextjs is configured to refer to `.env`...
-
 ### Problems noticed when running `npm run dev` the first time.
 
 UI:

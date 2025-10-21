@@ -115,6 +115,10 @@ UX Ideas for this are:
 
 I'd probably want to eventually convert the table to a data-grid framework (like [agGrid](https://www.ag-grid.com/), or [Glide](https://grid.glideapps.com/)) to more easily support filtering & sorting + better performance when loading large datasets. We'd also want additional filter components (checkboxes, dropdowns, etc) above the table for filtering the data themselves.
 
+#### Use a search database for sorting + filtering
+
+Rather than filtering via DB queries (becomes harder to maintain over time as you add more columns + gets slower as you add more table rows), we might want to consider using a search database (like Algolia, ElasticSearch, TypeSense, or similar) to make searches faster & easier to maintain over time.
+
 #### We only have cities and not states
 
 Feels like a larger feature improvement for this kind of assignment (this would be a future task if a real project), but we might want to filter/search on US-state and not just city, which would mean having a location model that links a city to a US-state.

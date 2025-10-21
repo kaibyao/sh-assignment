@@ -1,8 +1,8 @@
 import { Table } from "@radix-ui/themes";
-import { SelectAdvocate } from "@/db/schema";
+import { AdvocateWithSpecialties } from "@/db/schema";
 
 interface AdvocatesTableProps {
-  filteredAdvocates: SelectAdvocate[];
+  filteredAdvocates: AdvocateWithSpecialties[];
 }
 
 export function AdvocatesTable({ filteredAdvocates }: AdvocatesTableProps) {

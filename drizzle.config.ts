@@ -1,3 +1,5 @@
+require('dotenv').config({ path: './.env.local' });
+
 const config = {
   dialect: "postgresql",
   schema: "./src/db/schema.ts",

@@ -1,9 +1,19 @@
-import db from "../../../db";
-import { advocates } from "../../../db/schema";
-import { advocateData } from "../../../db/seed/advocates";
+import { seedSpecialties } from "../../../db/seed/specialties";
+import { seedAdvocates, seedAdvocateSpecialties } from "../../../db/seed/advocates";
 
 export async function POST() {
-  const records = await db.insert(advocates).values(advocateData).returning();
+  // Seed specialties first
+  const insertedSpecialties = await seedSpecialties();
 
-  return Response.json({ advocates: records });
+  // Then seed advocates
+  const insertedAdvocates = await seedAdvocates();
+
+  // Finally, create the many-to-many relationships
+  await seedAdvocateSpecialties(insertedAdvocates, insertedSpecialties);
+
+  return Response.json({
+    specialties: insertedSpecialties,
+    advocates: insertedAdvocates,
+    message: "Database seeded successfully",
+  });
 }

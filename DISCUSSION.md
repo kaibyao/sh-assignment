@@ -22,6 +22,8 @@ added 424 packages, and audited 425 packages in 16s
 
 * Might warrant fixing some of these if they turn out to be significantly problematic.
 
+^ UPDATE: In retrospect, this wasn't necessary as I was able to get everything working with existing packages (I did install some new ones, however). In a real production app I'd want to update these to the latest versions + test them before deploying.
+
 ### Fixed issues + improvements
 
 #### UI is basic, can be improved (done)
@@ -95,9 +97,23 @@ There's no way to add or edit (or remove/archive) an advocate, and I suspect thi
 
 We should have a way to add new advocates/specialties, as well as a way to edit existing ones.
 
+UX Ideas for this are:
+* Have a `+ New Advocate` button above the table (probably next to the pagination control).
+* Clicking the button would either:
+  1. Open up a side drawer/panel with a form for creating the advocate, along with a "Submit" button on the bottom, OR
+  2. The existing view's table would create a "temporary" advocate row at the top of the list of advocates, with input fields in each column. The submit button would be in a new column on the right side of the table.
+    * PRO: no need for a new "view" or to take the user out of their current context (faster implementation).
+    * CON: depending on how many columns/fields we add for advocates, this could get noisy / hard to use. Idea number 1 is better to maintain in a complex app over a long period of time.
+* There would be an "Edit" button in a new column on the right side of the table that opens up the same view, except with field values pre-filled (this would be the same column as the new one in idea number 2).
+* Implementation details:
+  * React context for managing form state.
+  * Create + Edit component wrappers that include the react context provider.
+  * Form component is a child of the context and uses context handlers for updating state.
+  * `onSubmit()` prop that can be passed in from either Create or Edit functions.
+
 #### Sorting & filtering on Advocates Table
 
-I'd probably want to eventually convert the table to a data-grid framework (like [agGrid](https://www.ag-grid.com/), or [Glide](https://grid.glideapps.com/)) to more easily support filtering & sorting.
+I'd probably want to eventually convert the table to a data-grid framework (like [agGrid](https://www.ag-grid.com/), or [Glide](https://grid.glideapps.com/)) to more easily support filtering & sorting + better performance when loading large datasets. We'd also want additional filter components (checkboxes, dropdowns, etc) above the table for filtering the data themselves.
 
 #### We only have cities and not states
 
@@ -109,11 +125,23 @@ Using a default RadixUI theme for now to get basic layout and styling. If this w
 
 #### Implement better logging
 
-If we productionize this, console.log isn't going to cut it. Should probably use Pino or similar.
+If we productionize this, console.log isn't going to cut it. Should probably use Pino or similar for better integration w/ DataDog/Prometheus/similar monitoring + logging tools.
 
 #### Better separation of Server-side business vs data fetching logic
 
 In an actual production app, we wouldn't be putting DB queries in the HTTP handlers themselves; rather we would have data-fetch calls inside a DAO/class/file dedicated to fetching from specific tables, and a middle service layer (for business logic) that handles calling the data-fetch and transforming + returning them back through the API handler/controller.
+
+#### Update the Header Font
+
+Solace uses [Mollie Glaston](https://www.1001fonts.com/mollie-glaston-font.html) as its title fonts... with more time I'd like to also do the same for the header title.
+
+#### Format the phone #
+
+The phone numbers are all unformatted 10-character strings. I'd want to format them such that they are displayed as `(xxx)yyy-zzzz`.
+
+#### Mobile styling
+
+HTML tables don't translate well to mobile. We should have an alternate mobile view that uses list-cards (cards containing 2 columns: 1 for the field label, and the other for the field value).
 
 ## AI Usage
 
@@ -121,3 +149,4 @@ In an actual production app, we wouldn't be putting DB queries in the HTTP handl
 * DB Schema model typing.
 * Conversion of table to Radix table.
 * Conversion of `specialties` data model.
+* Adding pagination.

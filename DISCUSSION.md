@@ -22,7 +22,7 @@ added 424 packages, and audited 425 packages in 16s
 
 * Might warrant fixing some of these if they turn out to be significantly problematic.
 
-### Problems noticed when running `npm run dev` the first time.
+### Fixed issues + improvements
 
 #### UI is basic, can be improved (done)
 
@@ -83,13 +83,21 @@ There's a lot of duplicate specialties, and the specialties for each advocate is
 * Could use filters for specialties, years of experience, degree, and city.
 * The searching logic itself is basic and uses `.includes()` on every field, which can lead to perf issues when searching across many advocates. Would probably want to convert this to using a fuzzy-searching library (or if this were being productionized, to a search engine a la Algolia, ElasticSearch, TypeSense, etc.).
 
-#### Currently fetching all advocates
+#### Currently fetching all advocates (resolved)
 
 We currently fetch all advocate rows from the database. Given that we should assume that there are potentially hundreds of thousands of advocates, it would make sense to limit this via pagination.
+
+### Other improvements & ideas I didn't get to due to time
 
 #### Currently READ-only
 
 There's no way to add or edit (or remove/archive) an advocate, and I suspect this is necessary for this kind of application.
+
+We should have a way to add new advocates/specialties, as well as a way to edit existing ones.
+
+#### Sorting & filtering on Advocates Table
+
+I'd probably want to eventually convert the table to a data-grid framework (like [agGrid](https://www.ag-grid.com/), or [Glide](https://grid.glideapps.com/)) to more easily support filtering & sorting.
 
 #### We only have cities and not states
 
@@ -99,13 +107,13 @@ Feels like a larger feature improvement for this kind of assignment (this would 
 
 Using a default RadixUI theme for now to get basic layout and styling. If this were a full-fledged app, I'd probably want to start from the unstyled primitives instead and build off of that w/ specs given by the Design team.
 
-#### Sorting & filtering on Advocates Table
-
-I'd probably want to eventually convert the table to a data-grid framework (like [agGrid](https://www.ag-grid.com/), or [Glide](https://grid.glideapps.com/)) to more easily support filtering & sorting.
-
 #### Implement better logging
 
 If we productionize this, console.log isn't going to cut it. Should probably use Pino or similar.
+
+#### Better separation of Server-side business vs data fetching logic
+
+In an actual production app, we wouldn't be putting DB queries in the HTTP handlers themselves; rather we would have data-fetch calls inside a DAO/class/file dedicated to fetching from specific tables, and a middle service layer (for business logic) that handles calling the data-fetch and transforming + returning them back through the API handler/controller.
 
 ## AI Usage
 

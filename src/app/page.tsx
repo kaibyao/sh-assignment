@@ -6,6 +6,8 @@ import "@radix-ui/themes/styles.css";
 import "./globals.css";
 import { AdvocatesPageHeader } from "@/app/_components/AdvocatesPageHeader";
 import { AdvocatesTable } from "@/app/_components/AdvocatesTable";
+import { AdvocatesTableHeader } from "@/app/_components/AdvocatesTableHeader";
+import { Flex } from "@radix-ui/themes";
 
 export default function Home() {
   const [advocates, setAdvocates] = useState<AdvocateWithSpecialties[]>([]);
@@ -23,51 +25,44 @@ export default function Home() {
     });
   }, []);
 
-  const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const searchTerm = e.target.value;
+  const onChange = (searchTerm: string) => {
+    if (searchTerm === "") {
+      setFilteredAdvocates(advocates);
+      return;
+    }
 
-    document.getElementById("search-term").innerHTML = searchTerm;
+    const caseInsensitiveSearchTerm = searchTerm.toLowerCase();
 
-    console.log("filtering advocates...");
+    console.log("filtering advocates...", caseInsensitiveSearchTerm);
+
     const filteredAdvocates = advocates.filter((advocate) => {
       return (
-        advocate.firstName.includes(searchTerm) ||
-        advocate.lastName.includes(searchTerm) ||
-        advocate.city.includes(searchTerm) ||
-        advocate.degree.includes(searchTerm) ||
+        advocate.firstName.toLowerCase().includes(caseInsensitiveSearchTerm) ||
+        advocate.lastName.toLowerCase().includes(caseInsensitiveSearchTerm) ||
+        advocate.city.toLowerCase().includes(caseInsensitiveSearchTerm) ||
+        advocate.degree.toLowerCase().includes(caseInsensitiveSearchTerm) ||
         advocate.specialties.some((specialty) =>
-          specialty.includes(searchTerm)
+          specialty.toLowerCase().includes(caseInsensitiveSearchTerm),
         ) ||
-        advocate.yearsOfExperience.toLocaleString().includes(searchTerm)
+        advocate.yearsOfExperience
+          .toLocaleString()
+          .toLowerCase()
+          .includes(caseInsensitiveSearchTerm)
       );
     });
 
     setFilteredAdvocates(filteredAdvocates);
   };
 
-  const onClick = () => {
-    console.log(advocates);
-    setFilteredAdvocates(advocates);
-  };
-
   return (
-    <>
+    <Flex direction="column" gap="2">
       <AdvocatesPageHeader />
-      <main style={{ margin: "24px" }}>
-        <br />
-        <br />
-        <div>
-          <p>Search</p>
-          <p>
-            Searching for: <span id="search-term"></span>
-          </p>
-          <input style={{ border: "1px solid black" }} onChange={onChange} />
-          <button onClick={onClick}>Reset Search</button>
-        </div>
-        <br />
-        <br />
-        <AdvocatesTable filteredAdvocates={filteredAdvocates} />
+      <main style={{ marginLeft: "24px", marginRight: "24px" }}>
+        <Flex direction="column" gap="4" mt="2">
+          <AdvocatesTableHeader onSearchChange={onChange} />
+          <AdvocatesTable filteredAdvocates={filteredAdvocates} />
+        </Flex>
       </main>
-    </>
+    </Flex>
   );
 }

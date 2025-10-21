@@ -72,6 +72,10 @@ src/app/page.tsx (32:36) @ includes
 
 We have a number of typescript issues stemming from using the API endpoint to fetch & display various advocate attributes without them being typed, which leads to issues like the previous one.
 
+#### Migrations can't actually run (fixed)
+
+There was an environment variable issue, where Drizzle couldn't run migrations because it depends on `.env`, but we are using `.env.local` for our database url.
+
 #### Specialties are just an array of strings (resolved)
 
 There's a lot of duplicate specialties, and the specialties for each advocate is just a json payload of a string array... that's JSON-stringified (IE, it's not actually an array, but a JSON string representing an array of strings). If we ever want to do any kind of filtering / grouping / analysis on specialties, they will need to be their own data model / db table.
